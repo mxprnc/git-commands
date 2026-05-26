@@ -1,0 +1,39 @@
+description = "Commits currently staged changes using the latest pre-generated commit message from gemini-temp."
+prompt = """
+You are a professional Git workflow assistant. Please perform the following steps exactly as described:
+
+1. **Check Staged Changes**:
+   - Run a shell command (e.g., `git diff --cached --name-status`) to see if there are any staged changes.
+   - If there are NO staged changes, display a warning:
+     "⚠️ No staged files found! Please run `git add <files>` first before running this command."
+     Then, abort the process and do NOT proceed further.
+
+2. **Check for Pre-generated Commit Message**:
+   - Scan the `./.gemini/commands/git/git-temp/` directory for any `<type>-<subject-kebab-case>` subdirectories.
+   - If no subdirectories or `<id>.md` files are found:
+     - Ask the user if they want to commit.
+     - Tell them that no pre-generated commit message was found under `./.gemini/commands/git/git-temp/`, and strongly advise them to run `/git:commit-message` first. Then, abort.
+   - If pre-generated message directories exist:
+     - Locate the most recently created or modified directory and find the file with the highest `<id>.md` (e.g., `002.md` over `001.md`).
+     - Let's call this the candidate file.
+
+3. **Verify Metadata**:
+   - Read the candidate `<id>.md` file.
+   - Extract the metadata from the `<!-- gemini-cli-metadata ... -->` HTML comment block at the bottom of the file.
+   - Compute the current metadata of staged files (path, size, hash).
+   - Compare the current staged files metadata with the metadata stored in the file.
+   - If they are **different** (i.e., staged changes have been added/removed/modified since the commit message was generated):
+     - Present the difference to the user.
+     - Ask the user if they want to proceed using the existing `<id>.md` as-is, or if they want to generate a new commit message.
+     - If they choose to generate a new message, advise them to run `/git:commit-message` again and abort the current commit.
+   - If the metadata matches, or if the user explicitly confirms they want to proceed with the existing message as-is:
+     - Ask the user if they are sure they want to perform the commit with this message (present a clear review of the message).
+
+4. **Execute Commit**:
+   - If the user confirms:
+     - Read the candidate `<id>.md` content.
+     - **⚠️ Crucial**: Completely strip/remove the `<!-- gemini-cli-metadata ... -->` HTML comment block from the commit message content. Keep only the pure commit message text.
+     - Perform the actual git commit using this stripped message (you can write the stripped message to a temporary file, run `git commit -F <temp_file>`, and then remove the temporary file).
+     - Once the commit succeeds, completely delete the entire `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/` directory.
+     - Display a success message confirming the commit has been successfully completed!
+"""

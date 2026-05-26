@@ -1,0 +1,50 @@
+description = "Generates a professional English commit message for staged changes and saves it to a temp file."
+prompt = """
+You are a professional Git workflow assistant. Please perform the following steps exactly as described:
+
+1. **Check Staged Changes**:
+   - Run a shell command (e.g., `git diff --cached --name-status`) to see if there are any staged changes.
+   - If there are NO staged changes, display a clear warning to the user:
+     "⚠️ No staged files found! Please run `git add <files>` first to stage the files you want to commit."
+     Then, abort the process and do NOT proceed further.
+
+2. **Determine Intent and Generate Commit Message**:
+   - If staged changes are present, get the full diff (`git diff --cached`).
+   - Look at the user's input/hint (if any): "{{args}}".
+   - If the user provided an input/hint, use it to understand their intent. If they didn't, infer the intent entirely from the staged diff.
+   - Generate a highly professional commit message in **English only**, strictly adhering to the standards defined in `.gemini/commands/git/commit-message-guide.md`.
+     - Standard: `<type>(<scope>): <subject>` in the header, then a blank line, then a descriptive body (and optional footer).
+     - The subject must be in the imperative mood, starting with a capital letter, maximum 50 characters, and no trailing period.
+     - If the user's input contains a `<type>` (e.g., "docs: ..."), use it as the type, but translate the subject and rest of the message to English.
+
+3. **Determine Folder Path and ID**:
+   - The type (e.g., `feat`, `fix`, `docs`, etc.) and the subject in lowercase kebab-case (e.g., `implement-split-view-mode`) will form the directory name: `<type>-<subject-kebab-case>`.
+   - The target folder is: `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/`.
+   - Check if this folder already exists. Scan the files in it to determine the next available 3-digit padded number `<id>` (e.g., `001`, `002`, `003`...). If the folder doesn't exist or is empty, start with `001`.
+   - Construct the full file path: `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/<id>.md`.
+
+4. **Construct Metadata**:
+   - For all currently staged files, retrieve their relative path, size in bytes, and MD5 or git hash.
+   - Create an HTML comment block at the very bottom of the commit message in the following format:
+     ```html
+     <!-- gemini-cli-metadata
+     {
+       "files": [
+         {
+           "path": "relative/path/to/file",
+           "size": 1234,
+           "hash": "hash_value"
+         }
+       ]
+     }
+     -->
+     ```
+
+5. **Save and Inform**:
+   - Save the full commit message (including the HTML metadata comment at the bottom) to the determined path `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/<id>.md`.
+   - Output a beautiful markdown report containing:
+     - The generated English commit message.
+     - The path where it was saved as a clickable link.
+     - Ask the user if they want to modify the commit message. Explain that they can edit the file `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/<id>.md`.
+     - Advise them to run `/git:commit` once they are satisfied to complete the commit.
+"""

@@ -1,0 +1,27 @@
+description = "Automatically generates a commit message and commits staged changes immediately without review."
+prompt = """
+You are a professional Git workflow assistant. Please perform the following steps exactly as described:
+
+1. **Check Staged Changes**:
+   - Run a shell command (e.g., `git diff --cached --name-status`) to see if there are any staged changes.
+   - If there are NO staged changes:
+     - Inform the user that no files are staged.
+     - Ask them to run `git add` to add files, and then run `/git:force-commit` again.
+     - Abort the process.
+
+2. **Generate Commit Message**:
+   - If staged changes are present:
+     - Ask the user if they want to proceed with a force commit. If not, exit.
+     - Analyze the staged changes (`git diff --cached`) and automatically generate a high-quality English commit message following the Conventional Commits guidelines in `.gemini/commands/git/commit-message-guide.md`.
+     - Determine the `<type>` and `<subject-kebab-case>` of the message.
+     - Check if the target folder `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/` exists and find the next available `<id>.md` (starting at `001.md`).
+     - Retrieve staged files metadata (relative paths, sizes, hashes) and construct the `<!-- gemini-cli-metadata ... -->` HTML comment block.
+     - Save the full commit message (including metadata comment) to `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/<id>.md`.
+
+3. **Execute Commit**:
+   - Read the generated `<id>.md` file.
+   - **⚠️ Crucial**: Strip the `<!-- gemini-cli-metadata ... -->` HTML comment block completely from the commit message text.
+   - Perform the git commit using this pure, stripped message (e.g., by writing it to a temporary file, running `git commit -F <temp_file>`, and removing the temporary file).
+   - Once the commit succeeds, completely delete the `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/` directory.
+   - Display a success message indicating that the force commit has been successfully completed!
+"""
