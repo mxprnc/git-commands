@@ -30,6 +30,10 @@ Generates a highly compliant commit message (defaults to English) based on stage
     * **French (Français)**: `/git:commit-message in French feat: add logging`
     * **German (Deutsch)**: `/git:commit-message auf Deutsch chore: update packages`
     * **Italian (Italiano)**: `/git:commit-message in Italiano refactor: clean up db setup`
+  - **Translation Examples (Input vs. Target Language)**:
+    * **Auto-translate to English (Default)**: `/git:commit-message docs: README 수정` (Saves in English: `docs: update README`)
+    * **Explicit translation to English**: `/git:commit-message --lang en docs: README 수정` (Saves in English: `docs: update README`)
+    * **Explicit translation to Japanese**: `/git:commit-message -l ja docs: README 수정` (Saves in Japanese: `docs: READMEを修正`)
 
 > [!TIP]
 > **Global Language Support**:

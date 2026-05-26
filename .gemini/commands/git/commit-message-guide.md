@@ -90,4 +90,7 @@ These **AI Custom Commands** are used within the Gemini CLI chat session for pre
 > [!TIP]
 > **Tips for Successful Automation**:
 > - Arguments specifying your intent can be input in **any language** and will be analyzed and converted into a standard Conventional Commit message in the preferred language (defaults to English).
+>   * *Auto-translation (Default)*: `/git:commit-message docs: README 수정` translates and saves the commit message in English (`docs: update README`).
+>   * *Explicit translation*: `/git:commit-message --lang en docs: README 수정` translates and saves the commit message in English (`docs: update README`).
+>   * *Translation to other languages*: `/git:commit-message -l ja docs: README 수정` translates and saves the commit message in Japanese (`docs: READMEを修正`).
 > - If no staged files are detected, commands will trigger a safeguard, prompt you to run `git add` first, and terminate safely.
