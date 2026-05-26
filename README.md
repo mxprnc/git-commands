@@ -4,6 +4,33 @@ This directory contains the custom AI-powered Git helpers designed to streamline
 
 ---
 
+## 🚀 Installation & Customization
+
+You can install these helper commands into your project using the provided installation script. You can customize the command prefix (namespace) on installation if you wish to use something other than `/git`.
+
+### 1. Default Installation (`/git` prefix)
+By default, commands are registered under the `/git` namespace (e.g., `/git:commit-message`).
+```bash
+./install-git-commands.sh
+```
+
+### 2. Custom Prefix Installation (`/{custom_name}` prefix)
+If you want to use a different command prefix (for example, `/g` or `/mygit`), pass the desired namespace as an argument:
+```bash
+./install-git-commands.sh mygit
+```
+This automatically:
+- Creates the configuration under `.gemini/commands/mygit/`.
+- Registers slash-commands as `/mygit:commit-message`, `/mygit:commit`, and `/mygit:force-commit`.
+- Updates all internal path references and prompt guides to use the new prefix.
+
+*After installation, make sure to reload the commands in your Gemini CLI chat session:*
+```text
+/commands reload
+```
+
+---
+
 ## 🛠️ Gemini CLI Chat Commands
 
 If you are collaborating within the Gemini CLI chat session, you can use these granular slash-commands.
