@@ -3,7 +3,7 @@
 This document defines the standard Git commit message conventions for the project. All team members must adhere to this guide to ensure consistency and readability of the commit history.
 
 > [!IMPORTANT]
-> All commit messages (Header, Body, and Footer) must be written exclusively in **English**.
+> Commit messages (Header, Body, and Footer) default to **English**, but can be written in the user's preferred language if specified.
 
 ---
 
@@ -62,16 +62,16 @@ See-also: docs/product/split-view.md
 
 ## 4. AI-Powered Git Commit Helper (Automation Tool Guide)
 
-The project includes built-in **AI Helper Tools** designed to automatically enforce commit message conventions, translate inputs to English, and summarize changes.
+The project includes built-in **AI Helper Tools** designed to automatically enforce commit message conventions, translate inputs to the target language, and summarize changes.
 
-Because the AI directly analyzes the `git diff` of staged changes to generate commit messages, developers can adhere to the standards perfectly without the need for manual English composition.
+Because the AI directly analyzes the `git diff` of staged changes to generate commit messages, developers can adhere to the standards perfectly in their preferred language.
 
 ### 🛠️ Available Interfaces
 
 These **AI Custom Commands** are used within the Gemini CLI chat session for precise collaboration and step-by-step commit execution.
 
 1. **`/git:commit-message [intent]`**
-   - **Description**: Analyzes the diff of currently staged files to generate an English commit message.
+   - **Description**: Analyzes the diff of currently staged files to generate a commit message in the target language (defaults to English).
    - **Storage Location**: Saved temporarily as `<type>-<subject-kebab-case>/<id>.md` under the [.gemini/commands/git/git-temp/](git-temp/) folder.
    - **Metadata Storage**: Automatically embeds a list of staged files, sizes, and hashes at the bottom of the file inside a `<!-- gemini-cli-metadata -->` comment block.
    - **Editing Guide**: Displays the generated message and the temp file path, allowing the user to open and edit the markdown file directly.
@@ -83,11 +83,11 @@ These **AI Custom Commands** are used within the Gemini CLI chat session for pre
    - **Temporary File Cleanup**: Once the commit succeeds, the associated temporary directories under `.gemini/commands/git/git-temp/` are deleted automatically.
 
 3. **`/git:force-commit`**
-   - **Description**: An automation feature where the AI immediately writes a high-quality English commit message based on staged files, strips metadata comments, and executes the commit directly without review or confirmation prompts.
+   - **Description**: An automation feature where the AI immediately writes a high-quality commit message (defaults to English) based on staged files, strips metadata comments, and executes the commit directly without review or confirmation prompts.
 
 ---
 
 > [!TIP]
 > **Tips for Successful Automation**:
-> - Arguments specifying your intent (e.g., `"docs: (README) add guide documentation"`) can be input in **any language (Korean, Japanese, Chinese, etc.)** and will be fully analyzed and converted into a standard English Conventional Commit message.
+> - Arguments specifying your intent can be input in **any language** and will be analyzed and converted into a standard Conventional Commit message in the preferred language (defaults to English).
 > - If no staged files are detected, commands will trigger a safeguard, prompt you to run `git add` first, and terminate safely.

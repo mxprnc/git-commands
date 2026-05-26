@@ -12,10 +12,14 @@ You are a professional Git workflow assistant. Please perform the following step
    - If staged changes are present, get the full diff (`git diff --cached`).
    - Look at the user's input/hint (if any): "{{args}}".
    - If the user provided an input/hint, use it to understand their intent. If they didn't, infer the intent entirely from the staged diff.
-   - Generate a highly professional commit message in **English only**, strictly adhering to the standards defined in `.gemini/commands/git/commit-message-guide.md`.
-     - Standard: `<type>(<scope>): <subject>` in the header, then a blank line, then a descriptive body (and optional footer).
-     - The subject must be in the imperative mood, starting with a capital letter, maximum 50 characters, and no trailing period.
-     - If the user's input contains a `<type>` (e.g., "docs: ..."), use it as the type, but translate the subject and rest of the message to English.
+    - Generate a highly professional commit message, strictly adhering to the standards defined in `.gemini/commands/git/commit-message-guide.md`.
+      - **Target Language Determination**:
+        1. Scan the user's input/hint `"{{args}}"` for flag patterns like `--lang <language>` or `-l <language>` (e.g., `--lang ko`, `--lang korean`, `-l ja`, `--lang spanish` etc.). If found, set the target language accordingly and remove the flag/value from the input content.
+        2. If no flag is found, check if the input contains explicit language hints (e.g., "한국어로", "in Korean", "日本語で", "en español", "en français", "auf Deutsch", "in Italiano"). If present, use that requested language.
+        3. If neither is found, the target language defaults to **English**.
+      - Standard: `<type>(<scope>): <subject>` in the header, then a blank line, then a descriptive body (and optional footer).
+      - The subject must start with a capital letter, maximum 50 characters, and no trailing period. Use the imperative mood for English headers (e.g., "Add" instead of "Added"). For non-English headers, write naturally using correct grammar and style of that language.
+      - If the user's input contains a `<type>` (e.g., "docs: ..."), use it as the type, and write/translate the subject and rest of the message in the target language.
 
 3. **Determine Folder Path and ID**:
    - The type (e.g., `feat`, `fix`, `docs`, etc.) and the subject in lowercase kebab-case (e.g., `implement-split-view-mode`) will form the directory name: `<type>-<subject-kebab-case>`.

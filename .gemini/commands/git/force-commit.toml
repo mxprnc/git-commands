@@ -12,7 +12,11 @@ You are a professional Git workflow assistant. Please perform the following step
 2. **Generate Commit Message**:
    - If staged changes are present:
      - Ask the user if they want to proceed with a force commit. If not, exit.
-     - Analyze the staged changes (`git diff --cached`) and automatically generate a high-quality English commit message following the Conventional Commits guidelines in `.gemini/commands/git/commit-message-guide.md`.
+     - Analyze the staged changes (`git diff --cached`) and automatically generate a high-quality commit message following the Conventional Commits guidelines in `.gemini/commands/git/commit-message-guide.md`.
+     - **Target Language Determination**:
+       1. Scan the user's input/hint `"{{args}}"` for flag patterns like `--lang <language>` or `-l <language>` (e.g., `--lang ko`, `--lang korean`, `-l ja`, `--lang spanish` etc.). If found, set the target language accordingly and remove the flag/value from the input content.
+       2. If no flag is found, check if the input contains explicit language hints (e.g., "한국어로", "in Korean", "日本語で", "en español", "en français", "auf Deutsch", "in Italiano"). If present, use that requested language.
+       3. If neither is found, the target language defaults to **English**.
      - Determine the `<type>` and `<subject-kebab-case>` of the message.
      - Check if the target folder `./.gemini/commands/git/git-temp/<type>-<subject-kebab-case>/` exists and find the next available `<id>.md` (starting at `001.md`).
      - Retrieve staged files metadata (relative paths, sizes, hashes) and construct the `<!-- gemini-cli-metadata ... -->` HTML comment block.
